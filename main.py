@@ -5,7 +5,7 @@ from smtplib import *
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from creds import GMAIL_SERVER, FROM_ADDRESS, TO_ADDRESS, PASSWORD, SUBJECT
-
+from pprint import pp
 
 get_10_year_treasury_yield_data = yahooFinance.Ticker("^TNX")
 
@@ -79,14 +79,13 @@ print("\n\nLatest 3 News Articles About the 10 Year Treasury Yield.")
 for num, each_dict in enumerate(latest_3_news, start=1):
     for key, value in each_dict.items():
         if key == 'title':
+            name_of_article = value
             print(f"  {num}) Title of Article: {value}")
-            news_dict[f'{key.title()}-{num}'] = value
         if key == 'link':
+            news_dict[f'{name_of_article}'] = value
             print(f"  LinkURL: {value}")
-            news_dict[f'{key.title()}-{num}'] = value
     print()
 
-# pp(news_dict)
 # --------------------------- SNMP VARIABLES -----------------------------------
 
 GMAIL_SERVER = GMAIL_SERVER
@@ -96,37 +95,41 @@ PASSWORD = PASSWORD
 SUBJECT = SUBJECT
 CURRENT_TIME = datetime.now()
 NEWS = json.dumps(news_dict, indent=4)
-NEWS_ARTICLES = ''
-for key, value in news_dict.items():
-    NEWS_ARTICLES += f'{key}: {value}\n\n'
+NEWS_ARTICLES = list(news_dict.items())
 
 # --------------------------- SNMP MESSAGE SETUP -----------------------------------
 # EMAIL MESSAGE STRUCTURE IN HTML
 MESSAGE = f"""
-Put your HTML text here<h2>
-10 Year Treasury Yield : {good_vs_bad_day}<br>
----------------------------------------------------------------------
+<div>
+<h2>
+10 Year Treasury Yield : {good_vs_bad_day}<br> ---------------------------------------------------------------------
 </h2>
-<h3>Today's Closing Price:</h3>
-<p>{today_date}</p> <h4>\N{Dollar Sign}{current_closing_price}</h4>
+</div>
+<div>
+<h3>({today_date}) Today's Closing Price:</h3>
+<h3 style="color:blue;" </h3>\N{Dollar Sign}{current_closing_price}</h3>
 <p>----------------------------------------------------<br>
-<h3>Yesterday's Closing Price:</h3>
-<p>{yesterday_date}</p> <h4>\N{Dollar Sign}{previous_day_closing_price}</h4>
+<h3>({yesterday_date}) Yesterday's Closing Price:</h3>
+<h3 style="color:blue;" </h3>\N{Dollar Sign}{previous_day_closing_price}</h3>
 <p>----------------------------------------------------<br>
+<div>
 <p>Difference in Price Movement (Today vs Yesterday):</p>
-<h4>\N{Dollar Sign}{price_diff_today_vs_yesterday}</h4><br>
-Percentage Change: <h4>{percentage_change}%</h4
-<p>---------------------------------------------------------------<br>
-<h4>Latest 3 News Articles About the 10 Year Treasury Yield.</h4><br>
+<h4 style="color:blue;">\N{Dollar Sign}{price_diff_today_vs_yesterday}</h4>
+Percentage Change:
+<h4 style="color:blue;">{percentage_change}%</h4>
+<p>---------------------------------------------------------------
+<h4>Latest 3 News Articles About the 10 Year Treasury Yield.</h4>
 <p>
-{NEWS_ARTICLES}<br>
+1) {NEWS_ARTICLES[0][0]}<br> URL: {NEWS_ARTICLES[0][1]}<br> 
+2) {NEWS_ARTICLES[1][0]}<br> URL: {NEWS_ARTICLES[1][1]}<br> 
+3) {NEWS_ARTICLES[2][0]}<br> URL: {NEWS_ARTICLES[2][1]}<br>
 </p>
 <br>
 <b>Powered by www.pythonanywhere.com!</b><br>
-<b>Ran on {CURRENT_TIME} </b>
+<b>Ran on {CURRENT_TIME} </b
 """
 
-
+#
 # Send Email with Rain Status for the Day
 with SMTP(GMAIL_SERVER, port=587) as connection:
     connection.starttls()
@@ -144,4 +147,4 @@ with SMTP(GMAIL_SERVER, port=587) as connection:
 
     print(msg)
     connection.quit()
-
+#
