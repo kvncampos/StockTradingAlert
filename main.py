@@ -122,11 +122,6 @@ NEWS_ARTICLES = list(news_dict.items())
 # EMAIL MESSAGE STRUCTURE IN HTML
 MESSAGE = f"""
 <div>
-<h2>
-10 Year Treasury Yield : {good_vs_bad_day}<br> ---------------------------------------------------------------------
-</h2>
-</div>
-<div>
 <h3>({today_date}) Today's Closing Price:</h3>
 <h3 style="color:blue;" </h3>\N{Dollar Sign}{current_closing_price}</h3>
 <p>----------------------------------------------------<br>
