@@ -103,26 +103,20 @@ for key, value in news_dict.items():
 # --------------------------- SNMP MESSAGE SETUP -----------------------------------
 # EMAIL MESSAGE STRUCTURE IN HTML
 MESSAGE = f"""
-<h2>
-TICKER: 10 Year Treasury Yield<br>
--------------------------------------------
-</h2><br>
-<h2>
-{good_vs_bad_day}<br>
-...........................................
+Put your HTML text here<h2>
+10 Year Treasury Yield : {good_vs_bad_day}<br>
+---------------------------------------------------------------------
 </h2>
 <h3>Today's Closing Price:</h3>
-<p>{today_date}</p> <h4>\N{Dollar Sign}{current_closing_price}</h4><br>
-</p>
+<p>{today_date}</p> <h4>\N{Dollar Sign}{current_closing_price}</h4>
+<p>----------------------------------------------------<br>
 <h3>Yesterday's Closing Price:</h3>
-<p>{yesterday_date}</p> <h4>\N{Dollar Sign}{previous_day_closing_price}</h4><br>
-
----------------------------------<br>
-<p>
-Difference in Price Movement (Today vs Yesterday): <h4>\N{Dollar Sign}{price_diff_today_vs_yesterday}</h4><br>
-Percentage Change: <h4>{percentage_change}%</h4<br>
-</p>
----------------------------------------------------------------<br>
+<p>{yesterday_date}</p> <h4>\N{Dollar Sign}{previous_day_closing_price}</h4>
+<p>----------------------------------------------------<br>
+<p>Difference in Price Movement (Today vs Yesterday):</p>
+<h4>\N{Dollar Sign}{price_diff_today_vs_yesterday}</h4><br>
+Percentage Change: <h4>{percentage_change}%</h4
+<p>---------------------------------------------------------------<br>
 <h4>Latest 3 News Articles About the 10 Year Treasury Yield.</h4><br>
 <p>
 {NEWS_ARTICLES}<br>
