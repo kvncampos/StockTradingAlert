@@ -4,7 +4,7 @@ from datetime import datetime
 from smtplib import *
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from creds import GMAIL_SERVER, FROM_ADDRESS, TO_ADDRESS, PASSWORD, SUBJECT
+from creds import GMAIL_SERVER, FROM_ADDRESS, TO_ADDRESS, PASSWORD
 import logging
 
 # ----------------- TICKER TO MONITOR -----------------------
@@ -113,7 +113,7 @@ GMAIL_SERVER = GMAIL_SERVER
 FROM_ADDRESS = FROM_ADDRESS
 TO_ADDRESS = TO_ADDRESS
 PASSWORD = PASSWORD
-SUBJECT = SUBJECT
+SUBJECT = f'10 Year Treasury Yield : {good_vs_bad_day}'
 CURRENT_TIME = datetime.now()
 NEWS = json.dumps(news_dict, indent=4)
 NEWS_ARTICLES = list(news_dict.items())
@@ -149,23 +149,23 @@ Percentage Change:
 <b>Powered by www.pythonanywhere.com!</b><br>
 <b>Ran on {CURRENT_TIME} </b
 """
-#
-# # --------------------------- SNMP CONNECTION SETUP -----------------------------------
-# # Send Email with TICKER Information for the Day
-# with SMTP(GMAIL_SERVER, port=587) as connection:
-#     connection.starttls()
-#     connection.login(FROM_ADDRESS, PASSWORD)
-#
-#     msg = MIMEMultipart()
-#
-#     msg['From'] = FROM_ADDRESS
-#     msg['To'] = TO_ADDRESS
-#     msg['Subject'] = SUBJECT
-#
-#     # add in the message body
-#     msg.attach(MIMEText(MESSAGE, 'html'))
-#     connection.send_message(msg)
-#
-#     print(msg)
-#     connection.quit()
-#
+
+# --------------------------- SNMP CONNECTION SETUP -----------------------------------
+# Send Email with TICKER Information for the Day
+with SMTP(GMAIL_SERVER, port=587) as connection:
+    connection.starttls()
+    connection.login(FROM_ADDRESS, PASSWORD)
+
+    msg = MIMEMultipart()
+
+    msg['From'] = FROM_ADDRESS
+    msg['To'] = TO_ADDRESS
+    msg['Subject'] = SUBJECT
+
+    # add in the message body
+    msg.attach(MIMEText(MESSAGE, 'html'))
+    connection.send_message(msg)
+
+    print(msg)
+    connection.quit()
+
