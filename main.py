@@ -71,13 +71,13 @@ print(
 
 good_vs_bad_day = None
 if float(price_diff_today_vs_yesterday) < 0:
-    good_vs_bad_day = "Price Has Gone Down! \N{White Smiling Face}"
-    print(f"Price Has Gone Down! \N{White Smiling Face}")
+    good_vs_bad_day = "Price Has Gone Down! \N{down-pointing red triangle} \N{White Smiling Face}"
+    print(f"Price Has Gone Down! \N{down-pointing red triangle} \N{White Smiling Face}")
 
     print(f"----------------------")
 else:
-    good_vs_bad_day = "Price Has Gone Up! \N{White Frowning Face}"
-    print(f"Price Has Gone Up! \N{White Frowning Face}")
+    good_vs_bad_day = "Price Has Gone Up! \N{Chart with Upwards Trend} \N{White Frowning Face}"
+    print(f"Price Has Gone Up! \N{Chart with Upwards Trend} \N{White Frowning Face}")
     print(f"----------------------")
 print(f"--- Difference in Price Movement (Today vs Yesterday): \N{Dollar Sign}{price_diff_today_vs_yesterday}")
 print(f"--- Percentage Change: {percentage_change}%")
@@ -149,23 +149,23 @@ Percentage Change:
 <b>Powered by www.pythonanywhere.com!</b><br>
 <b>Ran on {CURRENT_TIME} </b
 """
-
-# --------------------------- SNMP CONNECTION SETUP -----------------------------------
-# Send Email with TICKER Information for the Day
-with SMTP(GMAIL_SERVER, port=587) as connection:
-    connection.starttls()
-    connection.login(FROM_ADDRESS, PASSWORD)
-
-    msg = MIMEMultipart()
-
-    msg['From'] = FROM_ADDRESS
-    msg['To'] = TO_ADDRESS
-    msg['Subject'] = SUBJECT
-
-    # add in the message body
-    msg.attach(MIMEText(MESSAGE, 'html'))
-    connection.send_message(msg)
-
-    print(msg)
-    connection.quit()
+#
+# # --------------------------- SNMP CONNECTION SETUP -----------------------------------
+# # Send Email with TICKER Information for the Day
+# with SMTP(GMAIL_SERVER, port=587) as connection:
+#     connection.starttls()
+#     connection.login(FROM_ADDRESS, PASSWORD)
+#
+#     msg = MIMEMultipart()
+#
+#     msg['From'] = FROM_ADDRESS
+#     msg['To'] = TO_ADDRESS
+#     msg['Subject'] = SUBJECT
+#
+#     # add in the message body
+#     msg.attach(MIMEText(MESSAGE, 'html'))
+#     connection.send_message(msg)
+#
+#     print(msg)
+#     connection.quit()
 #
