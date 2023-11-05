@@ -33,32 +33,32 @@ last_week = '1wk'
 end_date = datetime.now().strftime('%Y-%m-%d')
 
 # Valid options are 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y and ytd.
-last_week_data = ticker_data.history(period=last_week, interval='1d')
+current_week = ticker_data.history(period=last_week, interval='1d')
 last_6_months_data = ticker_data.history(period=last_3_months, interval='1wk')
 
 # ----------------- TICKER INFO TODAY -----------------------
-close_price = last_week_data
 try:
-    close_price.index = close_price.index.strftime('%Y-%m-%d')
-except:
+    current_week.index = current_week.index.strftime('%Y-%m-%d')
+except AttributeError:
     print('No data found, symbol may be delisted')
     logging.info(f"No data found, symbol may be delisted. Verify {TICKER}")
 
-current_closing = close_price['Close'].tail(1)
+# Tap into the current day ticker info.
+current_closing = current_week['Close'].tail(1)
 current_closing_price = format(current_closing._get_value(0, 'Close'), '.3f')
-today_date = close_price.index[-1]
+today_date = current_week.index[-1]
 
 # ----------------- TICKER INFO YESTERDAY -----------------------
-yesterday_price = last_week_data
-previous_day = close_price['Close'].tail(2)
+# Tap into yesterday's ticker info.
+previous_day = current_week['Close'].tail(2)
 previous_day_closing_price = format(previous_day._get_value(0, 'Close'), '.3f')
-yesterday_date = yesterday_price.index[-2]
+yesterday_date = current_week.index[-2]
 
 # ----------------- TICKER INFO PRICE TODAY VS YESTERDAY -----------------------
 price_diff_today_vs_yesterday = format(float(current_closing_price) - float(previous_day_closing_price), '.4f')
 
 percentage_change = format((float(current_closing_price) - float(previous_day_closing_price)) /
-                           float(previous_day_closing_price) * 100, '.4f')
+                           float(previous_day_closing_price) * 100, '.2f')
 
 # ----------------- TICKER INFO OUTPUT FOR CONSOLE -----------------------
 print(f'TICKER: 10 Year Treasury Yield')
@@ -85,7 +85,7 @@ print(f"---------------------------------------------------------------\n")
 
 # ----------------- Last Weeks Data -----------------------
 print('Last Weeks Data:\n')
-print(last_week_data[['Open', 'High', 'Low', 'Close']])
+print(current_week[['Open', 'High', 'Low', 'Close']])
 
 # ----------------- Last 6 Month Data -----------------------
 print('\n\nLast 6 Month Data:\n')
@@ -150,22 +150,22 @@ Percentage Change:
 <b>Ran on {CURRENT_TIME} </b
 """
 
-# # --------------------------- SNMP CONNECTION SETUP -----------------------------------
-# # Send Email with TICKER Information for the Day
-# with SMTP(GMAIL_SERVER, port=587) as connection:
-#     connection.starttls()
-#     connection.login(FROM_ADDRESS, PASSWORD)
+# --------------------------- SNMP CONNECTION SETUP -----------------------------------
+# Send Email with TICKER Information for the Day
+with SMTP(GMAIL_SERVER, port=587) as connection:
+    connection.starttls()
+    connection.login(FROM_ADDRESS, PASSWORD)
+
+    msg = MIMEMultipart()
+
+    msg['From'] = FROM_ADDRESS
+    msg['To'] = TO_ADDRESS
+    msg['Subject'] = SUBJECT
+
+    # add in the message body
+    msg.attach(MIMEText(MESSAGE, 'html'))
+    connection.send_message(msg)
+
+    print(msg)
+    connection.quit()
 #
-#     msg = MIMEMultipart()
-#
-#     msg['From'] = FROM_ADDRESS
-#     msg['To'] = TO_ADDRESS
-#     msg['Subject'] = SUBJECT
-#
-#     # add in the message body
-#     msg.attach(MIMEText(MESSAGE, 'html'))
-#     connection.send_message(msg)
-#
-#     print(msg)
-#     connection.quit()
-# #
