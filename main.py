@@ -105,17 +105,26 @@ for key, value in news_dict.items():
 MESSAGE = f"""
 <h2>
 TICKER: 10 Year Treasury Yield<br>
--------------------------------------
+-------------------------------------------
+</h2><br>
+<h2>
+{good_vs_bad_day}<br>
+...........................................
 </h2>
+<h3>Today's Closing Price:</h3>
+<p>{today_date}</p> <h4>\N{Dollar Sign}{current_closing_price}</h4><br>
+</p>
+<h3>Yesterday's Closing Price:</h3>
+<p>{yesterday_date}</p> <h4>\N{Dollar Sign}{previous_day_closing_price}</h4><br>
+
+---------------------------------<br>
 <p>
---- Today's Closing Price: {today_date} -> \N{Dollar Sign}{current_closing_price}<br>
---- Yesterday's Closing Price: {yesterday_date} -> \N{Dollar Sign}{previous_day_closing_price}<br>
-{good_vs_bad_day}
-----------------------<br>
---- Difference in Price Movement (Today vs Yesterday): \N{Dollar Sign}{price_diff_today_vs_yesterday}<br>
---- Percentage Change: {percentage_change}%<br>
+Difference in Price Movement (Today vs Yesterday): <h4>\N{Dollar Sign}{price_diff_today_vs_yesterday}</h4><br>
+Percentage Change: <h4>{percentage_change}%</h4<br>
+</p>
 ---------------------------------------------------------------<br>
-Latest 3 News Articles About the 10 Year Treasury Yield.<br>
+<h4>Latest 3 News Articles About the 10 Year Treasury Yield.</h4><br>
+<p>
 {NEWS_ARTICLES}<br>
 </p>
 <br>
