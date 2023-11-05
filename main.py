@@ -5,22 +5,44 @@ from smtplib import *
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from creds import GMAIL_SERVER, FROM_ADDRESS, TO_ADDRESS, PASSWORD, SUBJECT
-from pprint import pp
+import logging
 
-get_10_year_treasury_yield_data = yahooFinance.Ticker("^TNX")
+# ----------------- TICKER TO MONITOR -----------------------
+TICKER = '^TNX'
+
+def ticker_info(ticker=TICKER):
+    return yahooFinance.Ticker(ticker)
+
+
+# ----------------- LOGGING SETUP -----------------------
+# set up logging to file
+logging.basicConfig(
+    filename='logs_for_ticker.log',
+    level=logging.INFO,
+    format='[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
+    datefmt='%H:%M:%S',
+    filemode='a'
+)
+
+# ----------------- FETCH TICKET INFO -----------------------
+logging.info(f"Starting StockTrackerApp for: {TICKER}")
+ticker_data = ticker_info()
 
 last_3_months = '3mo'
 last_week = '1wk'
 end_date = datetime.now().strftime('%Y-%m-%d')
 
 # Valid options are 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y and ytd.
-last_week_data = get_10_year_treasury_yield_data.history(period=last_week, interval='1d')
-last_6_months_data = get_10_year_treasury_yield_data.history(period=last_3_months, interval='1wk')
+last_week_data = ticker_data.history(period=last_week, interval='1d')
+last_6_months_data = ticker_data.history(period=last_3_months, interval='1wk')
 
 # ----------------- TICKER INFO TODAY -----------------------
 close_price = last_week_data
-close_price.index = close_price.index.strftime('%Y-%m-%d')
-
+try:
+    close_price.index = close_price.index.strftime('%Y-%m-%d')
+except:
+    print('No data found, symbol may be delisted')
+    logging.info(f"No data found, symbol may be delisted. Verify {TICKER}")
 
 current_closing = close_price['Close'].tail(1)
 current_closing_price = format(current_closing._get_value(0, 'Close'), '.3f')
@@ -38,8 +60,7 @@ price_diff_today_vs_yesterday = format(float(current_closing_price) - float(prev
 percentage_change = format((float(current_closing_price) - float(previous_day_closing_price)) /
                            float(previous_day_closing_price) * 100, '.4f')
 
-
-# ----------------- TICKER INFO OUTPUT -----------------------
+# ----------------- TICKER INFO OUTPUT FOR CONSOLE -----------------------
 print(f'TICKER: 10 Year Treasury Yield')
 
 print(
@@ -66,14 +87,13 @@ print(f"---------------------------------------------------------------\n")
 print('Last Weeks Data:\n')
 print(last_week_data[['Open', 'High', 'Low', 'Close']])
 
-
 # ----------------- Last 6 Month Data -----------------------
 print('\n\nLast 6 Month Data:\n')
 last_6_months_data.index = last_6_months_data.index.strftime('%Y-%m-%d')
 print(last_6_months_data[['Open', 'Close']])
 
 # ----------------- Latest 3 News Articles -----------------------
-latest_3_news = get_10_year_treasury_yield_data.get_news()[:3]
+latest_3_news = ticker_data.get_news()[:3]
 news_dict = {}
 print("\n\nLatest 3 News Articles About the 10 Year Treasury Yield.")
 for num, each_dict in enumerate(latest_3_news, start=1):
@@ -86,6 +106,7 @@ for num, each_dict in enumerate(latest_3_news, start=1):
             print(f"  LinkURL: {value}")
     print()
 
+logging.info("Script Ran Succesfully.")
 # --------------------------- SNMP VARIABLES -----------------------------------
 
 GMAIL_SERVER = GMAIL_SERVER
@@ -129,22 +150,22 @@ Percentage Change:
 <b>Ran on {CURRENT_TIME} </b
 """
 
+# # --------------------------- SNMP CONNECTION SETUP -----------------------------------
+# # Send Email with TICKER Information for the Day
+# with SMTP(GMAIL_SERVER, port=587) as connection:
+#     connection.starttls()
+#     connection.login(FROM_ADDRESS, PASSWORD)
 #
-# Send Email with Rain Status for the Day
-with SMTP(GMAIL_SERVER, port=587) as connection:
-    connection.starttls()
-    connection.login(FROM_ADDRESS, PASSWORD)
-
-    msg = MIMEMultipart()
-
-    msg['From'] = FROM_ADDRESS
-    msg['To'] = TO_ADDRESS
-    msg['Subject'] = SUBJECT
-
-    # add in the message body
-    msg.attach(MIMEText(MESSAGE, 'html'))
-    connection.send_message(msg)
-
-    print(msg)
-    connection.quit()
+#     msg = MIMEMultipart()
 #
+#     msg['From'] = FROM_ADDRESS
+#     msg['To'] = TO_ADDRESS
+#     msg['Subject'] = SUBJECT
+#
+#     # add in the message body
+#     msg.attach(MIMEText(MESSAGE, 'html'))
+#     connection.send_message(msg)
+#
+#     print(msg)
+#     connection.quit()
+# #
